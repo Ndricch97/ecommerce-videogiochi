@@ -1,0 +1,174 @@
+Ecco un elenco delle query SQL per le operazioni che mi hai richiesto:
+
+### Aggiunta di un nuovo cliente
+```sql
+INSERT INTO Cliente (Nome, Cognome, DataNascita, IndirizzoResidenza, Email, Password, NumeroTelefono) 
+VALUES ('Nome', 'Cognome', 'YYYY-MM-DD', 'Indirizzo', 'email@example.com', 'password', '1234567890');
+```
+
+### Aggiunta di un nuovo amministratore
+```sql
+INSERT INTO Amministratore (Nome, Cognome, Email, Password, NumeroTelefono) 
+VALUES ('Nome', 'Cognome', 'email@example.com', 'password', '1234567890');
+```
+
+### Aggiungere un nuovo prodotto
+```sql
+INSERT INTO Prodotto (Titolo, Descrizione, Categoria, Piattaforma, DataPubblicazione, Prezzo, ID_Magazzino, ID_Amministratore) 
+VALUES ('Titolo prodotto', 'Descrizione prodotto', 'Categoria', 'Piattaforma', 'YYYY-MM-DD', 49.99, 1, 1);
+```
+
+### Aggiungere un nuovo ordine
+```sql
+INSERT INTO Ordine (DataCreazione, DataConsegna, Stato, MetodoPagamento, IndirizzoConsegna, Totale, ID_Cliente, ID_Amministratore)
+VALUES (NOW(), 'YYYY-MM-DD', 'Stato ordine', 'Metodo pagamento', 'Indirizzo consegna', 99.99, 1, 1);
+```
+
+### Aggiungere una nuova recensione
+```sql
+INSERT INTO Recensione (DataCreazione, Valutazione, Commento, ID_Cliente, ID_Prodotto, ID_Amministratore)
+VALUES ('YYYY-MM-DD', 5, 'Commento recensione', 1, 1, 1);
+```
+
+### Aggiungere una wishlist
+```sql
+INSERT INTO Wishlist (Nome, ID_Cliente) 
+VALUES ('Nome wishlist', 1);
+```
+
+### Inserimento di un prodotto all'interno di un ordine
+```sql
+INSERT INTO Ordine_Prodotto (ID_Ordine, ID_Prodotto, Quantità)
+VALUES (1, 1, 2);
+```
+
+### Inserimento di un prodotto all'interno di una wishlist
+```sql
+INSERT INTO Wishlist_Prodotto (ID_Wishlist, ID_Prodotto, Quantità)
+VALUES (1, 1, 1);
+```
+
+### Visualizzare una lista di tutti i clienti
+```sql
+SELECT * FROM Cliente;
+```
+
+### Visualizzare una lista di tutti gli amministratori
+```sql
+SELECT * FROM Amministratore;
+```
+
+### Lista dei prodotti all'interno del magazzino
+```sql
+SELECT P.Titolo, P.Categoria, P.Piattaforma, M.QuantitàProdotto
+FROM Prodotto P
+JOIN Magazzino M ON P.ID_Magazzino = M.ID_Magazzino;
+```
+
+### Visualizzare un singolo prodotto
+```sql
+SELECT * FROM Prodotto WHERE ID_Prodotto = 1;
+```
+
+### Visualizzare lo storico degli ordini di un singolo cliente
+```sql
+SELECT * FROM Ordine WHERE ID_Cliente = 1;
+```
+
+### Visualizzare le recensioni relative ad un prodotto
+```sql
+SELECT * FROM Recensione WHERE ID_Prodotto = 1;
+```
+
+### Lista di prodotti all'interno di un ordine
+```sql
+SELECT P.Titolo, OP.Quantità 
+FROM Ordine_Prodotto OP
+JOIN Prodotto P ON OP.ID_Prodotto = P.ID_Prodotto
+WHERE OP.ID_Ordine = 1;
+```
+
+### Lista di prodotti all'interno di una wishlist
+```sql
+SELECT P.Titolo, WP.Quantità 
+FROM Wishlist_Prodotto WP
+JOIN Prodotto P ON WP.ID_Prodotto = P.ID_Prodotto
+WHERE WP.ID_Wishlist = 1;
+```
+
+### Aggiornare i dati di un cliente
+```sql
+UPDATE Cliente 
+SET Nome = 'NuovoNome', Cognome = 'NuovoCognome', DataNascita = 'YYYY-MM-DD', IndirizzoResidenza = 'NuovoIndirizzo', Email = 'nuovaemail@example.com', NumeroTelefono = '1234567890' 
+WHERE ID_Cliente = 1;
+```
+
+### Aggiornare i dati di un amministratore
+```sql
+UPDATE Amministratore 
+SET Nome = 'NuovoNome', Cognome = 'NuovoCognome', Email = 'nuovaemail@example.com', NumeroTelefono = '1234567890' 
+WHERE ID_Amministratore = 1;
+```
+
+### Aggiornare la quantità dei prodotti all'interno del magazzino
+```sql
+UPDATE Magazzino 
+SET QuantitàProdotto = 50 
+WHERE ID_Magazzino = 1;
+```
+
+### Aggiornare i dati di un prodotto
+```sql
+UPDATE Prodotto 
+SET Titolo = 'NuovoTitolo', Descrizione = 'NuovaDescrizione', Prezzo = 59.99 
+WHERE ID_Prodotto = 1;
+```
+
+### Aggiornare lo stato degli ordini
+```sql
+UPDATE Ordine 
+SET Stato = 'NuovoStato', DataConsegna = 'YYYY-MM-DD' 
+WHERE ID_Ordine = 1;
+```
+
+### Eliminare un cliente
+```sql
+DELETE FROM Cliente WHERE ID_Cliente = 1;
+```
+
+### Eliminare un amministratore
+```sql
+DELETE FROM Amministratore WHERE ID_Amministratore = 1;
+```
+
+### Eliminare un prodotto
+```sql
+DELETE FROM Prodotto WHERE ID_Prodotto = 1;
+```
+
+### Eliminare un ordine
+```sql
+DELETE FROM Ordine WHERE ID_Ordine = 1;
+```
+
+### Eliminare una recensione
+```sql
+DELETE FROM Recensione WHERE ID_Recensione = 1;
+```
+
+### Eliminare una wishlist
+```sql
+DELETE FROM Wishlist WHERE ID_Wishlist = 1;
+```
+
+### Rimozione di un prodotto all'interno di un ordine
+```sql
+DELETE FROM Ordine_Prodotto WHERE ID_Ordine = 1 AND ID_Prodotto = 1;
+```
+
+### Rimozione di un prodotto all'interno di una wishlist
+```sql
+DELETE FROM Wishlist_Prodotto WHERE ID_Wishlist = 1 AND ID_Prodotto = 1;
+```
+
+Fammi sapere se hai bisogno di ulteriori modifiche o chiarimenti!
