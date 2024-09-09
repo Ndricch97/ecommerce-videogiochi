@@ -1,0 +1,190 @@
+DDL e DML (creazione base dati, tabelle, chiavi primarie e esterne, indici)
+-- Creazione del database
+create database ecommercedivideogiochi;
+
+-- Utilizzo del database
+USE ecommercedivideogiochi;
+
+-- Creazione delle tabelle
+create table Cliente (
+    ID_Cliente int auto_increment,
+    Nome varchar(50) not null,
+    Cognome varchar(50) not null,
+    DataNascita date,
+    IndirizzoResidenza varchar(100),
+    Email varchar(255) unique not null,
+    Password varchar(255) not null,
+    NumeroTelefono varchar(20) unique,
+    primary key (ID_Cliente)
+)engine=InnoDB;
+
+create table Amministratore(
+    ID_Amministratore int auto_increment,
+    Nome varchar(50) not null,
+    Cognome varchar(50) not null,
+    Email varchar(255) unique not null,
+    Password varchar(255) not null,
+    NumeroTelefono varchar(20) unique,
+    primary key (ID_Amministratore)
+)engine=InnoDB;
+
+create table Magazzino(
+    ID_Magazzino int auto_increment,
+    QuantitàProdotto int not null,
+    primary key (ID_Magazzino)
+)engine=InnoDB;
+
+create table Prodotto(
+    ID_Prodotto int auto_increment,
+    Titolo varchar(100) not null,
+    Descrizione text,
+    Categoria varchar(30),
+    Piattaforma varchar(30),
+    DataPubblicazione date,
+    Prezzo decimal(10, 2) check(Prezzo>=0),
+    ID_Magazzino int,
+    ID_Amministratore int,
+    primary key (ID_Prodotto),
+    foreign key (ID_Magazzino)
+                     references Magazzino(ID_Magazzino),
+    foreign key (ID_Amministratore)
+                     references Amministratore(ID_Amministratore)
+)engine=InnoDB;
+
+create table Ordine(
+    ID_Ordine int auto_increment,
+    DataCreazione datetime not null,
+    DataConsegna date,
+    Stato varchar(30),
+    MetodoPagamento varchar(50),
+    IndrizzoConsegna varchar(100),
+    Totale decimal(10, 2) check(Totale>=0),
+    ID_Cliente int,
+    ID_Amministratore int,
+    primary key (ID_Ordine),
+    foreign key (ID_Cliente)
+                   references Cliente(ID_Cliente),
+    foreign key (ID_Amministratore)
+                   references Amministratore(ID_Amministratore)
+)engine=InnoDB;
+
+create table Recensione(
+    ID_Recensione int auto_increment,
+    DataCreazione date,
+    Valutazione int check(Valutazione between 1 and 5),
+    Commento text,
+    ID_Cliente int,
+    ID_Prodotto int,
+    ID_Amministratore int,
+    primary key (ID_Recensione),
+    foreign key (ID_Cliente)
+                       references Cliente(ID_Cliente),
+    foreign key (ID_Prodotto)
+                       references Prodotto(ID_Prodotto),
+    foreign key (ID_Amministratore)
+                       references Amministratore(ID_Amministratore)
+)engine=InnoDB;
+
+create table Wishlist(
+    ID_Wishlist int auto_increment,
+    Nome varchar(50),
+    ID_Cliente int,
+    primary key (ID_Wishlist),
+    foreign key (ID_Cliente)
+                    references Cliente(ID_Cliente)
+)engine=InnoDB;
+
+create table Ordine_Prodotto(
+    ID_Ordine int,
+    ID_Prodotto int,
+    Quantità int not null check(Quantità>0),
+    primary key (ID_Ordine, ID_Prodotto),
+    foreign key (ID_Ordine)
+                            references Ordine(ID_Ordine),
+    foreign key (ID_Prodotto)
+                            references Prodotto(ID_Prodotto)
+)engine=InnoDB;
+
+create table Wishlist_Prodotto(
+    ID_Wishlist int,
+    ID_Prodotto int,
+    Quantità int not null check(Quantità>0),
+    primary key (ID_Wishlist, ID_Prodotto),
+    foreign key (ID_Wishlist)
+                              references Wishlist(ID_Wishlist),
+    foreign key (ID_Prodotto)
+                              references Prodotto(ID_Prodotto)
+)engine=InnoDB;
+
+-- Creazione di indici
+create index idx_titolo on Prodotto(Titolo);
+create index idx_categoria on Prodotto(Categoria);
+create index idx_piattaforma on Prodotto(Piattaforma);
+create index idx_stato_ordine on Ordine(Stato);
+create index idx_data_creazione on Ordine(DataCreazione);
+create index idx_ordine_prodotto on Ordine_Prodotto(ID_Ordine, ID_Prodotto);
+create index idx_wishlist_prodotto on Wishlist_Prodotto(ID_Wishlist, ID_Prodotto);
+
+Inserimento di dati esempio
+-- Inserimento dati Cliente
+insert into Cliente (ID_Cliente, Nome, Cognome, DataNascita, IndirizzoResidenza, Email, Password, NumeroTelefono)
+values 
+    (1, 'Mario', 'Rossi', '1990-05-15', 'Via Napoli 10, Milano', 'mario.rossi@gmail.com', 'cane12', '3403385362'),
+    (2, 'Luigi', 'Verdi', '1988-06-25', 'Via Milano 15, Roma', 'luigi.verdi@gmail.com', 'gatto25', '3336523698'),
+    (3, 'Anna', 'Bianchi', '1992-07-20', 'Via Firenze 25, Napoli', 'anna.bianchi@gmail.com', 'coniglio87', '3314526529');
+    
+
+
+-- Inserimento dati Amministratori
+insert into Amministratore (ID_Amministratore, Nome, Cognome, Email, Password, NumeroTelefono)
+values 
+    (1, 'Giovanni', 'Gialli', 'giovanni.gialli@ecommerce.com', 'admin123', '3331112233'),
+    (2, 'Francesca', 'Blu', 'francesca.blu@ecommerce.com', 'admin456', '3332223344');
+
+-- Inserimento quantità nel Magazzino
+insert into Magazzino (ID_Magazzino, QuantitàProdotto)
+values
+(1, 30);
+
+-- Inserimento dati dei Prodotti
+insert into Prodotto (ID_Prodotto, Titolo, Descrizione, Categoria, Piattaforma, DataPubblicazione, Prezzo, ID_Magazzino, ID_Amministratore)
+values 
+    (1, The Last of Us, Joel ed Ellie lottano per sopravvivere in un mondo post-apocalittico infestato da creature infette., Avventura, Playstation 4, 29-07-2014, 49.99, 1, 1),
+    (2, Zelda Breath of the Wild, Link si avventura in un vasto mondo aperto, affrontando nemici e risolvendo enigmi per liberare Hyrule., Avventura, Nintendo Switch, 03-03-2017, 59.99, 1, 1),
+    (3, Black Myth Wukong, Un guerriero scimmia esplora un mondo fantastico, combattendo contro creature mitologiche e affrontando sfide., Azione, PC, 19-08-2024, 59.99, 1, 2);
+
+-- Inserimento di Ordini
+insert into Ordine (DataCreazione, DataConsegna, Stato, MetodoPagamento, IndirizzoConsegna, Totale, ID_Cliente, ID_Amministratore)
+values 
+    ('2024-09-10', NULL, 'In lavorazione', 'Carta di Credito', 'Via Napoli 10, Milano', 109.98, 1, 1),
+    ('2024-09-11', NULL, 'Spedito', 'PayPal', 'Via Milano 15, Roma', 59.99, 3, 1);
+
+
+
+
+
+-- Inserimento di Recensioni
+insert into Recensione (DataCreazione, Valutazione, Commento, ID_Cliente, ID_Prodotto, ID_Amministratore)
+values 
+    (20-09-2024, 5, Gioco fantastico! GOTY!!!, 1, 2, 1),
+    (01-10-2024, 4, Bel gioco ma non mi ha convinto molto., 3, 3, 2);
+
+-- Inserimento di Wishlist
+insert into Wishlist (Nome, ID_Cliente)
+values 
+    (Lista desideri di Mario, 1),
+    (Lista desideri di Luigi, 2);
+
+-- Inserimento dei prodotti all’interno di un ordine
+insert into Ordine_Prodotto (ID_Ordine, ID_Prodotto, Quantità)
+values 
+    (1, 1, 1),
+    (1, 3, 1),
+    (2, 3, 1);
+
+-- Inserimento di prodotti all’interno di una wishlist
+insert into Wishlist_Prodotto (ID_Wishlist, ID_Prodotto, Quantità)
+values 
+    (2, 1, 1),
+    (1, 2, 1),
+    (2, 3, 1);
